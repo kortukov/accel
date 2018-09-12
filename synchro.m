@@ -20,12 +20,13 @@ for i = 4:4 %size(files,1)
     video_file_name = [filename,'_video_data.mat']
     try
         cd (folder_name)
+        load(video_file_name, 'stim_timecourse', 'timing', 'hustle_timing')
     catch
         warning(['Video data not found, was searching for ',folder_name])
         continue
     end
-    load(video_file_name, 'stim_timecourse', 'timing', 'hustle_timing')
-    %debug - counting differences
+    
+    %считаем разницу в показаниях времени камеры и ээг
     st_times_vid = []
     for j = 1:size(stim_timecourse,1)
          if stim_timecourse(j) == 1
@@ -38,43 +39,22 @@ for i = 4:4 %size(files,1)
             st_times_eeg = [st_times_eeg; markers(j,1)]
         end
     end
-    
     difference = zeros(size(st_times_vid))
     for j = 1:size(st_times_vid)
         difference(j) = st_times_vid(j) - st_times_eeg(j)/1000
     end
-    
-    
-    error()
-    %ищем первый стимул на видео
-    j = 1
-    while stim_timecourse(j) == 0
-        j = j+1;
-    end
-    video_first_st = timing(j)
-    %считаем разницу для синхронизации
-    difference = video_first_st - (first_st/1000)
-    
-    
-    st_timing = [], rs_timing = []
+     
+    %составляем векторы тайминга стимулов и реакций
+    st_timing = [], rs_timing = [], k = 1
     for j = 1:size(markers,1)
         if ismember(markers(j,3), ST)
-            st_timing = [st_timing; markers(j,1)/1000 + difference]
+            st_timing = [st_timing; markers(j,1)/1000 + difference(k)]
         elseif ismember(markers(j,3), RS)
-            rs_timing = [rs_timing; markers(j,1)/1000 + difference]
+            rs_timing = [rs_timing; markers(j,1)/1000 + difference(k)]
+            k = k+1
         end
-    end
-    for j = 1:size(hustle_timing)
-        hustle_timing(j) = timing(hustle_timing(j))
-    end
-    
-    test_st_timing = []
-    for j = 1:size(stim_timecourse,1)
-        if stim_timecourse(j) == 1
-            test_st_timing = [test_st_timing; timing(j)]
-        end
-    end
-    
+    end 
+    save(video_file_name, 'st_timing', 'rs_timing')
 end
 
 
