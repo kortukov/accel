@@ -24,7 +24,7 @@ for i = 1:size(files,1)
         load(video_file_name, 'stim_timecourse', 'timing');
     catch
         warning(['Video data not found, was searching for ',folder_name])
-        continue2
+        continue
     end
     video_file_name
     %смотрим когда были стимулы на ээг
