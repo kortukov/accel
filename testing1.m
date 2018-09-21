@@ -2,7 +2,14 @@
 %рассчитываем разницу между сигналами по ээг, пересчитываем её
 %в тайминг видео и используем только первый стимул
 
+
+
+
 %Неустойчив к отсутствию реакций
+
+
+
+
 cd /home/evgeny/lab/ann
 files = dir('*.ann');
 
@@ -68,6 +75,7 @@ for i = 2:2 %1:size(files,1) %bagina_1 = 32
         end     
     end 
     first_st = video_stimuli_check(1);
+    
     %рассчитанные стимулы
     video_stimuli_eeg = zeros(size(video_stim_diff))
     video_stimuli_eeg(1) = first_st
