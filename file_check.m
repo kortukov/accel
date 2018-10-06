@@ -2,7 +2,7 @@ load('corrupt_files.mat', '-mat')
 
 files = transpose(corrupt_video_files);
 
-for i = 50:50 %size(files,1) 
+for i = 2:2 %size(files,1) 
     cd /home/evgeny/lab/task
     [path, filename, ext] = fileparts(files{i});
     k = strfind(filename, '_') %здесь просто составляем имена необходимых файлов

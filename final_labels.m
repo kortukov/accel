@@ -3,7 +3,7 @@ load('corrupt_files.mat', '-mat')
 cd /home/evgeny/lab/hustle_01
 files = dir('*txt')
 
-for i = 1:size(files,1)
+for i = 8:8%size(files,1)
     cd /home/evgeny/lab/hustle_01
     [path, filename, ext] = fileparts(files(i).name);
     k = strfind(filename, '_'); %здесь просто составляем имена необходимых файлов

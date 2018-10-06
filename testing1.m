@@ -13,7 +13,7 @@
 cd /home/evgeny/lab/ann
 files = dir('*.ann');
 
-for i = 2:2 %1:size(files,1) %bagina_1 = 32
+for i = 3:3 %1:size(files,1) %bagina_1 = 32
     cd /home/evgeny/lab/ann
     markers = readtable(files(i).name, 'filetype', 'text');
     markers = table2array(markers);
