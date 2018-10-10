@@ -3,7 +3,7 @@ load('corrupt_files.mat', '-mat')
 cd /home/evgeny/lab/hustle_01
 files = dir('*txt')
 
-for i = 8:8%size(files,1)
+for i = 20:20%size(files,1)
     cd /home/evgeny/lab/hustle_01
     [path, filename, ext] = fileparts(files(i).name);
     k = strfind(filename, '_'); %здесь просто составляем имена необходимых файлов
@@ -17,12 +17,21 @@ for i = 8:8%size(files,1)
     end
     try
         cd (folder_name);
-        load(video_file_name, 'st_timing', 'rs_timing', 'hustle_timing', 'timing');
+        load(video_file_name, 'st_timing', 'rs_timing','stim_timecourse','rs_timecourse','hustle_timecourse', 'hustle_timing', 'timing');
     catch
         warning(['Video data not found, was searching for ',folder_name])
         continue
     end
     video_file_name
+    
+    stem(stim_timecourse), hold on
+    stem(rs_timecourse)
+    stem(hustle_timecourse, 'g'), hold off
+    
+    
+    
+    error('stop here')
+    cd /home/evgeny/lab/task
     hustle_timing = transpose(timing(hustle_timing));
     j = 1, k = 1;
     epoch_labels = zeros(size(st_timing))

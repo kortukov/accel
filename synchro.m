@@ -92,7 +92,6 @@ for i = 1:size(files,1)
     %countin the timing difference vector
     difference = st_times_vid - st_times_eeg/1000;
     
-    
     %creating correct stimuli and responses vectors in video timing
     st_timing = st_times_eeg/1000 + difference;
     rs_timing = rs_times_eeg/1000 + difference;
