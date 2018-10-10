@@ -34,8 +34,10 @@ for i = 1:size(files,1)
     k = 1;
     while (j <= size(hustle_times,1) ) & (k <= size(timing,2))
         %absarr = [absarr, abs(timing(k) - hustle_times(j))];
-        if abs(timing(k) - hustle_times(j)) > 0.05
+        if hustle_times(j) - timing(k) > 0.05
             k = k+1;
+        elseif timing(k) - hustle_times(j) > 0.05
+            j = j + 1
         else
             hustle_timecourse(k) = 1;
             hustle_timing = [hustle_timing; k];
