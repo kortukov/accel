@@ -6,7 +6,7 @@ files = dir('*.ann')
 
 corrupt_video_files = {}%Video files with lost stimuli
 normal_video_files = {}
-for i = 1:size(files,1)
+for i = 317:317%1:size(files,1)
     %reading eeg_data
     cd /home/evgeny/lab/ann
     markers = readtable(files(i).name, 'filetype', 'text');
@@ -43,6 +43,7 @@ for i = 1:size(files,1)
     markers(find(markers(:,3)==RS(1)),3)= 2;
     markers(find(markers(:,3)==RS(2)),3)= -2;
     
+    'privet'
     %searching for absent and then double (or more) responses
     stim_indices = find(markers(:,3) == 1);
     for j = 1:length(stim_indices)
@@ -76,6 +77,7 @@ for i = 1:size(files,1)
     elseif (180 <= len) && (len <= 200)
         first_recorded_stimulus = 200 - length(stim_indices) + 1;
     end
+    %вектор сделать 
     
     %finding timing of reactions on eeg
     rs_times_eeg = markers(rs_indices);
@@ -98,17 +100,13 @@ for i = 1:size(files,1)
 
     %now creating rs_timecourse vector
     rs_timecourse = zeros(size(stim_timecourse));
-    k = 1;
-    for j = 1:length(timing)
-        if abs(rs_timing(k) - timing(j)) < 0.04
-            rs_timecourse(j) = 1;
-            k = k + 1;
-            if k > length(rs_timing)
-                break
-            end
-        end
+    for j = 1:length(rs_timing)
+        delta = timing - rs_timing(j);
+        min_delta_id = find(abs(delta) == min(abs(delta)),1,'first');
+        rs_timecourse(min_delta_id) = 1;
     end
-    save(video_file_name, 'first_recorded_stimulus', 'st_timing', 'rs_timing', 'rs_timecourse', '-append')
+    
+    %save(video_file_name, 'first_recorded_stimulus', 'st_timing', 'rs_timing', 'rs_timecourse', '-append')
 end
 
 
@@ -116,6 +114,6 @@ end
 cd /home/evgeny/lab/task
 corrupt_video_files = corrupt_video_files'
 normal_video_files = normal_video_files'
-save('corrupt_files.mat', 'corrupt_video_files', '-mat')
-save('normal_files.mat', 'normal_video_files', '-mat')
+%save('corrupt_files.mat', 'corrupt_video_files', '-mat')
+%save('normal_files.mat', 'normal_video_files', '-mat')
 'saved'

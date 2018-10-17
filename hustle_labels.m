@@ -26,25 +26,18 @@ for i = 1:size(files,1)
     end
     %creating hustle timecourse binary vector
     %with ones in those indexes when there were hustles
-    hustle_timecourse = zeros(size(stim_timecourse));
+    %and also hustle_timing
     
-    %another option - hustle_timing vector with frames with hustles
+    
+    hustle_timecourse = zeros(size(stim_timecourse));
     hustle_timing = []
-    j = 1;
-    k = 1;
-    while (j <= size(hustle_times,1) ) & (k <= size(timing,2))
-        %absarr = [absarr, abs(timing(k) - hustle_times(j))];
-        if hustle_times(j) - timing(k) > 0.05
-            k = k+1;
-        elseif timing(k) - hustle_times(j) > 0.05
-            j = j + 1
-        else
-            hustle_timecourse(k) = 1;
-            hustle_timing = [hustle_timing; k];
-            j = j+1;
-            k = k+1;
-        end
+    for j = 1:length(hustle_times)
+        delta = timing - hustle_times(j);
+        min_delta_id = find(abs(delta) == min(abs(delta)),1,'first');
+        hustle_timecourse(min_delta_id) = 1;
+        hustle_timing = [hustle_timing; min_delta_id];
     end
+    
     save(video_file_name, 'hustle_timing', 'hustle_timecourse', '-append')
     
     cd /home/evgeny/lab/hustle_01
