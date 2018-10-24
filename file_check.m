@@ -1,8 +1,7 @@
-load('corrupt_files.mat', '-mat')
+load('clean_files.mat', '-mat')
+files = clean_video_files
 
-files = transpose(corrupt_video_files);
-
-for i = 2:2 %size(files,1) 
+for i = 5:5 %size(files,1) 
     cd /home/evgeny/lab/task
     [path, filename, ext] = fileparts(files{i});
     k = strfind(filename, '_') %здесь просто составляем имена необходимых файлов
@@ -11,7 +10,7 @@ for i = 2:2 %size(files,1)
     video_file_name = files{i}
     try
         cd (folder_name);
-        load(video_file_name, 'stim_timecourse', 'timing');
+        load(video_file_name, 'stim_timecourse', 'timing', 'cent_cords');
     catch
         warning(['Video data not found, was searching for ',folder_name])
         continue
@@ -29,6 +28,7 @@ for i = 2:2 %size(files,1)
     ST = [11,12,21,22,211,212,221,222, 255]; 
     RS = [101,104];
     no_reaction_epochs = [];
+    more_reaction_epochs = [];
     st_times_eeg = [];
     rs_times_eeg = [];
     j = 1;
@@ -50,6 +50,10 @@ for i = 2:2 %size(files,1)
                 rs_times_eeg = [rs_times_eeg; 0]
                 no_reaction_epochs = [no_reaction_epochs; size(rs_times_eeg, 1)]
             end
+            if reaction > 1
+                rs_times_eeg = [rs_times_eeg; 0]
+                more_reaction_epochs = [more_reaction_epochs; size(rs_times_eeg, 1)]
+            end
             j = k - 1; %чтобы не делать лишних итераций
         end
         j = j + 1;
@@ -61,9 +65,18 @@ for i = 2:2 %size(files,1)
          if stim_timecourse(j) == 1
              st_times_vid = [st_times_vid; timing(j)];
          end
-    end   
+    end
     
-   
+    delta = length(timing) - length(cent_cords);
+    left = floor(delta/2);
+    right = ceil(delta/2);
+    figure('Name', 'Principal component analysis')
+    
+    plot(timing(1 + left :end-right), principal_components(:,1)), hold on
+    stem(timing,stim_timecourse*1.04)
+    stem(timing,rs_timecourse)
+    stem(timing, hustle_timecourse), hold off
+    legend('dif','Stimuli', 'Responses', 'Hustles')
 end
 
 cd /home/evgeny/lab/task

@@ -6,7 +6,7 @@ files = dir('*.ann')
 
 corrupt_video_files = {}%Video files with lost stimuli
 normal_video_files = {}
-for i = 317:317%1:size(files,1)
+for i = 1:size(files,1)
     %reading eeg_data
     cd /home/evgeny/lab/ann
     markers = readtable(files(i).name, 'filetype', 'text');
@@ -74,7 +74,7 @@ for i = 317:317%1:size(files,1)
        first_recorded_stimulus = 50 - length(stim_indices) + 1; 
     elseif (80 <= len) && (len <= 100)
        first_recorded_stimulus = 100 - length(stim_indices) + 1;
-    elseif (180 <= len) && (len <= 200)
+    elseif (180 <= len) && (_len <= 200)
         first_recorded_stimulus = 200 - length(stim_indices) + 1;
     end
     %вектор сделать 
@@ -85,7 +85,7 @@ for i = 317:317%1:size(files,1)
     st_times_eeg = markers(stim_indices);
     st_times_vid = timing(stim_timecourse == 1)';
     %if their numbers don't match = some stimuli are lost
-    if size(st_times_vid,1) ~= size(st_times_eeg,1)
+    if length(st_times_vid) ~= length(st_times_eeg)
         corrupt_video_files{end + 1} = video_file_name;
         continue
     end
@@ -106,7 +106,7 @@ for i = 317:317%1:size(files,1)
         rs_timecourse(min_delta_id) = 1;
     end
     
-    %save(video_file_name, 'first_recorded_stimulus', 'st_timing', 'rs_timing', 'rs_timecourse', '-append')
+    save(video_file_name, 'first_recorded_stimulus', 'st_timing', 'rs_timing', 'rs_timecourse', '-append')
 end
 
 
@@ -114,6 +114,6 @@ end
 cd /home/evgeny/lab/task
 corrupt_video_files = corrupt_video_files'
 normal_video_files = normal_video_files'
-%save('corrupt_files.mat', 'corrupt_video_files', '-mat')
-%save('normal_files.mat', 'normal_video_files', '-mat')
+save('corrupt_files.mat', 'corrupt_video_files', '-mat')
+save('normal_files.mat', 'normal_video_files', '-mat')
 'saved'
