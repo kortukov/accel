@@ -81,17 +81,40 @@ for i = 1:1%size(files,1)
     
     %now forming the needed data matrix
     accel_full = EEG.data(45, :);
-    accel = {};
-    time = {};
-    speed = {};
-    position = {};
     for j = 1:length(epoch_number)
-        accel{end + 1} = accel_full(st_times_eeg(j):rs_times_eeg(j))';
-        time{end + 1} = [st_times_eeg(j):rs_times_eeg(j)]';
+        data_matrix(j).num = epoch_number(j);
+        data_matrix(j).accel = accel_full(st_times_eeg(j):rs_times_eeg(j))';
+        data_matrix(j).time = [st_times_eeg(j):rs_times_eeg(j)]';
+        data_matrix(j).speed = cumtrapz(data_matrix(j).accel)';
+        data_matrix(j).position = cumtrapz(data_matrix(j).speed)';
+        if (length(data_matrix(j).time) == 1)
+            data_matrix(j).response = 0;
+        else 
+            data_matrix(j).response = markers(rs_indices(j),3);
+        end
+        %here we will add data_matrix(j).hustle made with 
+        %final_labels.m,when the labels for 0,1,2,3 sessions are ready
     end
-    accel = accel';
-    time = time';
+    data.data_matrix = data_matrix;
+    data.subject = subject;
+    data.session = session;
+    %save([filename '_accel_data.mat', '-mat', 'data'];
     
+%     try
+%        cd /home/evgeny/lab/clean_data
+%        cd(subject);
+%        load([filename '_video_data.mat'], '-mat', 'hustle_timecourse');
+%     catch
+%         warning('No such variable in  video data');
+%     end
+    
+
+    for j = 1:length(epoch_number)
+       plot(st_times_eeg(j):rs_times_eeg(j), data_matrix(j).speed), hold on
+       title(filename);
+    end
+    hold off
+   
     
 end
 
