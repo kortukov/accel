@@ -113,7 +113,7 @@ for i = 99:99%size(files,1)
     for j = 1:length(epoch_number)
        plot(st_times_eeg(j):rs_times_eeg(j), data.data_matrix(j).accel), hold on
        if data.data_matrix(j).epoch_labels == 1
-          text(st_times_eeg(j), -2, 'hustle'); 
+          text(st_times_eeg(j), 0 , 'hustle'); 
            
        end
        title([filename ' accelerometer']);
