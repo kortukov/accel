@@ -2,7 +2,7 @@ cd /home/evgeny/lab/accel
 files = dir('*.ann')
 
 
-for i = 1:1%size(files,1)
+for i = 99:99%size(files,1)
     %reading set file
     cd /home/evgeny/lab/accel/set
     [path, filename, ext] = fileparts(files(i).name); 
@@ -16,7 +16,7 @@ for i = 1:1%size(files,1)
     %creating subject and session fields
     k = strfind(filename, '_') 
     subject = filename(1:k(1)-1);
-    session = filename(k(1)+1);
+    session = str2num(filename(k(1)+1));
     
     %reading ann_data
     cd /home/evgeny/lab/accel
@@ -85,8 +85,8 @@ for i = 1:1%size(files,1)
         data_matrix(j).num = epoch_number(j);
         data_matrix(j).accel = accel_full(st_times_eeg(j):rs_times_eeg(j))';
         data_matrix(j).time = [st_times_eeg(j):rs_times_eeg(j)]';
-        data_matrix(j).speed = cumtrapz(data_matrix(j).accel)';
-        data_matrix(j).position = cumtrapz(data_matrix(j).speed)';
+        data_matrix(j).speed = cumtrapz(data_matrix(j).accel);
+        data_matrix(j).position = cumtrapz(data_matrix(j).speed);
         if (length(data_matrix(j).time) == 1)
             data_matrix(j).response = 0;
         else 
@@ -98,24 +98,50 @@ for i = 1:1%size(files,1)
     data.data_matrix = data_matrix;
     data.subject = subject;
     data.session = session;
-    %save([filename '_accel_data.mat', '-mat', 'data'];
     
-%     try
-%        cd /home/evgeny/lab/clean_data
-%        cd(subject);
-%        load([filename '_video_data.mat'], '-mat', 'hustle_timecourse');
-%     catch
-%         warning('No such variable in  video data');
-%     end
+    if (session == 0) || (session == 1)
+        cd /home/evgeny/lab/clean_data
+        cd(subject);
+        load([filename '_video_data.mat'], '-mat', 'hustle_timecourse', 'epoch_labels');
+        for j = 1:length(epoch_number)
+           data.data_matrix(j).epoch_labels = epoch_labels(j); 
+        end
+    end
     
-
+    figure
+    subplot(3,1,1)
     for j = 1:length(epoch_number)
-       plot(st_times_eeg(j):rs_times_eeg(j), data_matrix(j).speed), hold on
-       title(filename);
+       plot(st_times_eeg(j):rs_times_eeg(j), data.data_matrix(j).accel), hold on
+       if data.data_matrix(j).epoch_labels == 1
+          text(st_times_eeg(j), -2, 'hustle'); 
+           
+       end
+       title([filename ' accelerometer']);
     end
     hold off
-   
+    subplot(3,1,2)
+    for j = 1:length(epoch_number)
+       plot(st_times_eeg(j):rs_times_eeg(j), data.data_matrix(j).speed), hold on
+       if data.data_matrix(j).epoch_labels == 1
+          text(st_times_eeg(j), -2, 'hustle'); 
+           
+       end
+       title([filename 'speed']);
+    end
+    hold off
+    subplot(3,1,3)
+    for j = 1:length(epoch_number)
+       plot(st_times_eeg(j):rs_times_eeg(j), data.data_matrix(j).position), hold on
+       if data.data_matrix(j).epoch_labels == 1
+          text(st_times_eeg(j), -2, 'hustle'); 
+           
+       end
+       title([filename ' position']);
+    end
+    hold off
     
+
+    %save([filename '_accel_data.mat', '-mat', 'data'];
 end
 
 cd /home/evgeny/lab/task/accel

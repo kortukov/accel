@@ -29,6 +29,11 @@ for i = 1:size(files,1)
     end
     video_file_name 
     %all files ready
+    %checking for timing to be a row
+    if size(timing,2) == 1
+        timing = timing';
+    end
+    
     
     %cleaning eeg data
     % clear unused marker
@@ -74,7 +79,7 @@ for i = 1:size(files,1)
        first_recorded_stimulus = 50 - length(stim_indices) + 1; 
     elseif (80 <= len) && (len <= 100)
        first_recorded_stimulus = 100 - length(stim_indices) + 1;
-    elseif (180 <= len) && (_len <= 200)
+    elseif (180 <= len) && (len <= 200)
         first_recorded_stimulus = 200 - length(stim_indices) + 1;
     end
     %вектор сделать 
@@ -84,6 +89,7 @@ for i = 1:size(files,1)
     %finding timing of stimuli on video and eeg 
     st_times_eeg = markers(stim_indices);
     st_times_vid = timing(stim_timecourse == 1)';
+    
     %if their numbers don't match = some stimuli are lost
     if length(st_times_vid) ~= length(st_times_eeg)
         corrupt_video_files{end + 1} = video_file_name;
