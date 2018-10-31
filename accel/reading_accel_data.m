@@ -63,6 +63,9 @@ for i = 1:size(files,1)
     st_times_eeg = markers(stim_indices);
     rs_times_eeg = markers(rs_indices);
     
+    if length(st_times_eeg)~=length(rs_times_eeg)
+       warning('stim_reaction disbalance!');
+    end
     
     %now checking from which stimulus the eeg recording started
     %3 different options - 50, 100 and 200 epochs
@@ -77,25 +80,40 @@ for i = 1:size(files,1)
     elseif (180 <= len) && (len <= 200)
         first_recorded_stimulus_eeg = 200 - length(stim_indices) + 1;
         epoch_number = [first_recorded_stimulus_eeg: 200]';
+    else
+        warning('multiple stimuli lost')
     end
+    
     
     %now forming the needed data matrix
     accel_full = EEG.data(45, :);
+    dead_time = 250 %ms - before this time we will not analyze acel signal
     for j = 1:length(epoch_number)
+        
         data_matrix(j).num = epoch_number(j);
-        data_matrix(j).accel = accel_full(st_times_eeg(j):rs_times_eeg(j))';
-        data_matrix(j).time = [st_times_eeg(j):rs_times_eeg(j)]';
-        data_matrix(j).begin = double(st_times_eeg(j));
-        data_matrix(j).end = double(rs_times_eeg(j));
-        data_matrix(j).speed = cumtrapz(data_matrix(j).accel);
-        data_matrix(j).position = cumtrapz(data_matrix(j).speed);
-        if (length(data_matrix(j).time) == 1)
-            data_matrix(j).response = 0;
-        else 
+        if rs_times_eeg(j)-st_times_eeg(j) > dead_time % if not omission or false alarm
+            data_matrix(j).accel = accel_full(st_times_eeg(j)+dead_time:rs_times_eeg(j))';
+            data_matrix(j).accel_diff = [0; diff(data_matrix(j).accel)]
+            data_matrix(j).time = [st_times_eeg(j)+dead_time:rs_times_eeg(j)]';
+            data_matrix(j).begin = double(st_times_eeg(j)+dead_time);
+            data_matrix(j).end = double(rs_times_eeg(j));
             data_matrix(j).response = markers(rs_indices(j),3);
+        else %omission or false alarm
+            data_matrix(j).accel = NaN;
+            data_matrix(j).accel_diff = NaN;
+            data_matrix(j).time = NaN;
+            data_matrix(j).begin = double(st_times_eeg(j));
+            data_matrix(j).end = double(rs_times_eeg(j));
+            data_matrix(j).response = 0;
         end
+        % NOT INFORMATIVE
+        %data_matrix(j).speed = cumtrapz(data_matrix(j).accel);
+        %data_matrix(j).position = cumtrapz(data_matrix(j).speed);
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %here we will add data_matrix(j).hustle made with 
         %final_labels.m,when the labels for 0,1,2,3 sessions are ready
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end
     data.data_matrix = data_matrix;
     data.subject = subject;
