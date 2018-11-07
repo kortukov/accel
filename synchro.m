@@ -1,7 +1,7 @@
 %First synchronizing algorithm
 %Counting a vector of differences between all stimuli on video and eeg
 %Works only if all stimuli on video and eeg are present 
-cd /home/evgeny/lab/ann
+cd /home/evgeny/lab/ann01
 files = dir('*.ann')
 
 corrupt_video_files = {}%Video files with lost stimuli

@@ -2,7 +2,7 @@ cd /home/evgeny/lab/accel
 files = dir('*.ann')
 
 
-for i = 1:size(files,1)
+for i = 3%1:size(files,1)
     %reading set file
     cd /home/evgeny/lab/accel/set
     [path, filename, ext] = fileparts(files(i).name); 
@@ -32,8 +32,8 @@ for i = 1:size(files,1)
         markers(find(markers(:,3)==FB(j)),:)=[];
     end
     %replace stimuli marks with ones
-    for i = 1:length(ST)
-        markers(find(markers(:,3)==ST(i)),3)= 1;
+    for j = 1:length(ST)
+        markers(find(markers(:,3)==ST(j)),3)= 1;
     end
     %replace resp marks with [2, -2] for [101, 104] correspondingly
     markers(find(markers(:,3)==RS(1)),3)= 2;
@@ -88,6 +88,7 @@ for i = 1:size(files,1)
     %now forming the needed data matrix
     accel_full = EEG.data(45, :);
     dead_time = 250 %ms - before this time we will not analyze acel signal
+    data_matrix = []
     for j = 1:length(epoch_number)
         
         data_matrix(j).num = epoch_number(j);
@@ -127,6 +128,8 @@ for i = 1:size(files,1)
             for j = 1:length(epoch_number)
                 data.data_matrix(j).epoch_labels = epoch_labels(j); 
             end
+            data.number_of_hustles = length(find(epoch_labels));
+            data.number_of_nonhustles = length(stim_indices) - data.number_of_hustles;
         end
     catch
         warning('Was unable to find labels');

@@ -26,9 +26,9 @@ for i = 1:size(files,1)
     video_file_name
     
     hustle_timing = transpose(timing(hustle_timing));
-    j = 1, k = 1;
+    j = 1; k = 1;
     epoch_labels = zeros(size(st_timing));
-    while j <= size(st_timing,1) & k <= size(hustle_timing,1)
+    while j <= length(st_timing) & k <= length(hustle_timing)
         if st_timing(j) <= hustle_timing(k)
             if rs_timing(j) < hustle_timing(k)
                 j = j+1;
