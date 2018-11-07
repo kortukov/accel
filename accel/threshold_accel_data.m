@@ -9,6 +9,8 @@
 cd /home/evgeny/lab/accel/data
 files = dir('*_accel_data.mat');
 
+sum_threshold = 0;
+k = 0;
 for i = 25%:length(files)
     load(files(i).name)
     
@@ -163,6 +165,10 @@ for i = 25%:length(files)
     %data.threshold = threshold;
     %data.optimum = optimum;
     %save(files(i).name, 'threshold', '-append');
+    sum_threshold = sum_threshold + threshold;
+    k = k + 1;
 end 
-
+if k != 0
+    sum_threshold = sum_threshold/ k;
+end
 cd /home/evgeny/lab/task/accel
