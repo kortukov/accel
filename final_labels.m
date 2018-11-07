@@ -43,7 +43,7 @@ for i = 1:size(files,1)
     end
     
     %fixing the video starting from 7th stimulus
-    if video_file_name == 'manuhina_0_video_data.mat'
+    if strcmp(video_file_name, 'manuhina_0_video_data.mat')
         epoch_labels = [zeros(first_recorded_stimulus-1,1);epoch_labels];
     end
     
