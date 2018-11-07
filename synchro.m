@@ -41,8 +41,8 @@ for i = 1:size(files,1)
         markers(find(markers(:,3)==FB(j)),:)=[];
     end
     %replace stimuli marks with ones
-    for i = 1:length(ST)
-        markers(find(markers(:,3)==ST(i)),3)= 1;
+    for j = 1:length(ST)
+        markers(find(markers(:,3)==ST(j)),3)= 1;
     end
     %replace resp marks with [2, -2] for [101, 104] correspondingly
     markers(find(markers(:,3)==RS(1)),3)= 2;
