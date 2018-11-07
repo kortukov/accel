@@ -6,7 +6,7 @@
 
 cd /home/evgeny/lab/accel/data
 files = dir('*data.mat');
-labeled_files = [2,4,8,12,16,18,22,27,29,31,34]; %numbers of files with labels
+%numbers of files with labels
 
 %mean threshold was computed in threshold_accel_data.m
 mean_threshold = 12.136363636363637;
