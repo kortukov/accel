@@ -2,7 +2,7 @@ cd ../hustle_01
 files = dir('*.txt')
 
 
-for i = 1:size(files,1)
+for i = 1:1%size(files,1)
     files(i).name
     hustle_times = dlmread(files(i).name, ',',1,0)
     hustle_times = hustle_times(:,1);
@@ -27,7 +27,9 @@ for i = 1:size(files,1)
     %creating hustle timecourse binary vector
     %with ones in those indexes when there were hustles
     %and also hustle_timing
-    
+    if size(timing,2) == 1
+        timing = timing';
+    end
     
     hustle_timecourse = zeros(size(stim_timecourse));
     hustle_timing = []
@@ -38,7 +40,7 @@ for i = 1:size(files,1)
         hustle_timing = [hustle_timing; min_delta_id];
     end
     
-    save(video_file_name, 'hustle_timing', 'hustle_timecourse', '-append')
+    %save(video_file_name, 'hustle_timing', 'hustle_timecourse', '-append')
     
     cd /home/evgeny/lab/hustle_01
 end

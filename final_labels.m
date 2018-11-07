@@ -18,7 +18,7 @@ for i = 1:size(files,1)
     end
     try
         cd (folder_name);
-        load(video_file_name,'st_timing', 'rs_timing','stim_timecourse','rs_timecourse','hustle_timecourse', 'hustle_timing', 'timing', 'cent_cords', 'fing_cords');
+        load(video_file_name,'st_timing', 'rs_timing','stim_timecourse','rs_timecourse','hustle_timecourse', 'hustle_timing', 'timing', 'cent_cords', 'fing_cords', 'first_recorded_stimulus');
     catch
         warning(['Video data not found, was searching for ',folder_name])
         continue
@@ -41,6 +41,12 @@ for i = 1:size(files,1)
             k = k+1;
         end
     end
+    
+    %fixing the video starting from 7th stimulus
+    if video_file_name == 'manuhina_0_video_data.mat'
+        epoch_labels = [zeros(first_recorded_stimulus-1,1);epoch_labels];
+    end
+    
     lost_hustles = length(hustle_timing) - length(find(epoch_labels));
     if lost_hustles > 10
         lost_hustle_files{end+1} = video_file_name;
