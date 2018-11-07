@@ -7,16 +7,39 @@
 %'big event' is a term coined by Sasha
 
 cd /home/evgeny/lab/accel/data
-files = dir('*1_accel_data.mat');
- %numbers of files with labels
+files = dir('*_accel_data.mat');
 
-for i = 1:length(files)
-    
+for i = 25%:length(files)
     load(files(i).name)
     
     if ~isfield(data.data_matrix, 'epoch_labels')
+        clear('data');
         continue
     end
+    %there is lymar 0 without hustles, but we concatenate her 0 session
+    %with 1st session 
+    
+    %concatenating 0 and 1 session to find optimal threshold
+    if data.session == 0
+        other_file_name = [data.subject '_1_accel_data.mat'];
+    elseif data.session == 1
+        other_file_name = [data.subject '_0_accel_data.mat'];
+    end
+    try 
+        other_data = load(other_file_name); 
+        other_hustles = other_data.data.number_of_hustles;
+        other_nonhustles = other_data.data.number_of_nonhustles;
+        other_data = other_data.data;
+        data.data_matrix = [data.data_matrix,other_data.data_matrix];
+    catch
+        warning('unable to load 1 session');
+       other_hustles = 0;
+       other_nonhustles = 0;
+    end
+    
+    common_hustles = data.number_of_hustles + other_hustles;
+    common_nonhustles = data.number_of_nonhustles + other_nonhustles;
+    
     
     % Figuring out the threshold value for critical_point
     % maximizing number of labeled epochs in critical epochs
@@ -50,8 +73,8 @@ for i = 1:length(files)
 %      fig1 = figure;
 %      k = 1:length(number_of_labeled);
     
-    tpr = number_of_labeled/data.number_of_hustles;
-    fpr = number_of_unlabeled/data.number_of_nonhustles;
+    tpr = number_of_labeled/common_hustles;
+    fpr = number_of_unlabeled/common_nonhustles;
 %     scatter(fpr, tpr); hold on
 %     text(fpr, tpr, num2str(k'));
 %     scatter(fpr, fpr); hold off
@@ -137,9 +160,9 @@ for i = 1:length(files)
     
     %savefig(figurename);
     
-    data.threshold = threshold;
+    %data.threshold = threshold;
     %data.optimum = optimum;
-    save(files(i).name, 'data', '-append');
+    %save(files(i).name, 'threshold', '-append');
 end 
 
 cd /home/evgeny/lab/task/accel

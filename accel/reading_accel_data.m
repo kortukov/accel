@@ -2,7 +2,7 @@ cd /home/evgeny/lab/accel
 files = dir('*.ann')
 
 
-for i = 3%1:size(files,1)
+for i = 1:size(files,1)
     %reading set file
     cd /home/evgeny/lab/accel/set
     [path, filename, ext] = fileparts(files(i).name); 
