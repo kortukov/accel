@@ -19,7 +19,7 @@ for i = 3%1:length(files)
         labeled_file_name = [data.subject '_1_accel_data.mat'];
         labeled_data = load(labeled_file_name);
         try 
-            data.threshold = labeled_data.data.threshold;
+            data.threshold = labeled_data.threshold;
         catch
             %warning('Even the 1st session doesn`t have labels');
             data.threshold = mean_threshold;
