@@ -130,6 +130,7 @@ for i = 1:size(files,1)
             end
             data.number_of_hustles = length(find(epoch_labels));
             data.number_of_nonhustles = length(stim_indices) - data.number_of_hustles;
+        else
         end
     catch
         warning('Was unable to find labels');

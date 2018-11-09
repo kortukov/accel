@@ -168,7 +168,7 @@ for i = 25%:length(files)
     sum_threshold = sum_threshold + threshold;
     k = k + 1;
 end 
-if k != 0
+if k ~= 0
     sum_threshold = sum_threshold/ k;
 end
 cd /home/evgeny/lab/task/accel
