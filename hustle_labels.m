@@ -1,10 +1,30 @@
 cd ../hustle_01
 files = dir('*.txt')
 
+different_coding_files = {};
 
 for i = 1:size(files,1)
     files(i).name
-    hustle_times = dlmread(files(i).name, ',',1,0)
+    
+    try
+        hustle_times = dlmread(files(i).name, ',',1,0)
+    catch
+        warning('different coding of file')  
+        different_coding_files{end + 1}
+        
+        fileID = fopen(files(i).name); 
+        
+        text_scan = textscan(fileID,'%s%s', 'Delimiter',',');
+        fclose(fileID);
+        text_scan = text_scan{1,1}(2:end,:);
+
+        hustle_times = [];
+        for k = 1:length(text_scan)
+            hustle_times(k,1) = str2double(text_scan{k,1});
+        end
+        
+    end
+    
     hustle_times = hustle_times(:,1);
     for j = 1:size(hustle_times,1)
         hustle_times(j) = 60*(fix(hustle_times(j))) + 100*(hustle_times(j) - fix(hustle_times(j)));
@@ -32,7 +52,7 @@ for i = 1:size(files,1)
     end
     
     hustle_timecourse = zeros(size(stim_timecourse));
-    hustle_timing = []
+    hustle_timing = [];
     for j = 1:length(hustle_times)
         delta = timing - hustle_times(j);
         min_delta_id = find(abs(delta) == min(abs(delta)),1,'first');

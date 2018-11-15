@@ -66,7 +66,7 @@ for i = 1:size(files,1)
     if length(st_times_eeg)~=length(rs_times_eeg)
        warning('stim_reaction disbalance!');
     end
-    
+         
     %now checking from which stimulus the eeg recording started
     %3 different options - 50, 100 and 200 epochs
     %assuming error in time is less than 20 epochs
@@ -84,7 +84,6 @@ for i = 1:size(files,1)
         warning('multiple stimuli lost')
     end
     
-    
     %now forming the needed data matrix
     accel_full = EEG.data(45, :);
     dead_time = 250 %ms - before this time we will not analyze acel signal
@@ -93,7 +92,11 @@ for i = 1:size(files,1)
         
         data_matrix(j).num = epoch_number(j);
         if rs_times_eeg(j)-st_times_eeg(j) > dead_time % if not omission or false alarm
+            try
             data_matrix(j).accel = accel_full(st_times_eeg(j)+dead_time:rs_times_eeg(j))';
+            catch   
+            data_matrix(j).accel = accel_full(find(EEG.times==st_times_eeg(j)+dead_time):find(EEG.times==rs_times_eeg(j)))';
+            end
             data_matrix(j).accel_diff = [0; diff(data_matrix(j).accel)]
             data_matrix(j).time = [st_times_eeg(j)+dead_time:rs_times_eeg(j)]';
             data_matrix(j).begin = double(st_times_eeg(j)+dead_time);
@@ -121,7 +124,7 @@ for i = 1:size(files,1)
     data.session = session;
     
     try
-        if (session == 0) || (session == 1)
+        if (session == 0) || (session == 1) 
             cd /home/evgeny/lab/clean_data
             cd(subject);
             load([filename '_video_data.mat'], '-mat', 'hustle_timecourse', 'epoch_labels');
@@ -130,7 +133,6 @@ for i = 1:size(files,1)
             end
             data.number_of_hustles = length(find(epoch_labels));
             data.number_of_nonhustles = length(stim_indices) - data.number_of_hustles;
-        else
         end
     catch
         warning('Was unable to find labels');

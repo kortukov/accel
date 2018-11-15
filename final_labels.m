@@ -1,4 +1,6 @@
-%Здесь делаю итоговую разметку по эпохам - есть ли метания
+%This script generates final epoch labels (hustle or not) and stores in
+%video_data file
+
 load('corrupt_files.mat', '-mat')
 cd /home/evgeny/lab/hustle_01
 files = dir('*txt')
@@ -7,7 +9,7 @@ lost_hustle_files = {}
 for i = 1:size(files,1)
     cd /home/evgeny/lab/hustle_01
     [path, filename, ext] = fileparts(files(i).name);
-    k = strfind(filename, '_'); %здесь просто составляем имена необходимых файлов
+    k = strfind(filename, '_'); 
     folder_name = filename(1:k(1)-1); 
     folder_name = ['../clean_data/',folder_name];
     video_file_name = [filename(1:k(2)-1),'_video_data.mat'];

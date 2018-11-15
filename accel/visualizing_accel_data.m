@@ -1,8 +1,8 @@
-cd /home/evgeny/lab/accel/data
+cd /home/evgeny/lab/accel_data
 files = dir('*data.mat');
-a = [2,4,8,12,16,18,22,27,29,31,34];
 
-for i = 8%length(files)
+
+for i = 12%length(files)
     
     load(files(i).name)
     figurename = [data.subject '_' char(string(data.session))];

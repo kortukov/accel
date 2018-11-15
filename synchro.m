@@ -16,7 +16,7 @@ for i = 1:size(files,1)
     FB = [85,88,89,255]; % feedback
     %opening video_data files
     [path, filename, ext] = fileparts(files(i).name);
-    k = strfind(filename, '_') %здесь просто составляем имена необходимых файлов
+    k = strfind(filename, '_') %making filenames
     folder_name = filename(1:k(1)-1);
     folder_name = ['../clean_data/',folder_name];
     video_file_name = [filename,'_video_data.mat'];

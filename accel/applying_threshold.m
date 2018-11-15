@@ -4,21 +4,33 @@
 %changes on lines 29-30 and 71-72
 %and run script on all the files again
 
-cd /home/evgeny/lab/accel/data
+cd /home/evgeny/lab/accel_data
 files = dir('*data.mat');
+needed = [];
+filename = {};
+for i = 1: length(files)
+    filename{i} = files(i).name;
+end
+filename = string(filename);
+needed = contains(filename, ["4", "5", "6", "7"]);
+needed = logical(needed);
+files = files(needed);
+
 %numbers of files with labels
 
 %mean threshold was computed in threshold_accel_data.m
-mean_threshold = 12.136363636363637;
+mean_threshold = 7.00;
 for i = 3%1:length(files)
+    cd /home/evgeny/lab/accel_data
     load(files(i).name)
     
     %individual thresholds are stored in accel_data of 1st sessions
     
     if (data.session ~= 1)
         labeled_file_name = [data.subject '_1_accel_data.mat'];
-        labeled_data = load(labeled_file_name);
+        
         try 
+            labeled_data = load(labeled_file_name);
             data.threshold = labeled_data.threshold;
         catch
             %warning('Even the 1st session doesn`t have labels');
@@ -66,12 +78,14 @@ for i = 3%1:length(files)
         times_column = [times_column; data.data_matrix(j).critical_time];
     end
     cd ../../feat_tables_global
-    table = readtable(table_name);
-    
-    %table.mean_time = times_column
+    try
+        table = readtable(table_name);
+    catch
+        continue; 
+    end
+    %table.mean_time = times_column;
     table.individual_time = times_column;
-    
-    writetable(table, table_name);
+    writetable(table,table_name, 'Delimiter','\t') 
     
     
     

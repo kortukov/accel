@@ -11,8 +11,17 @@ files = dir('*_accel_data.mat');
 
 sum_threshold = 0;
 k = 0;
-for i = 25%:length(files)
+for i = 4%:length(files)
+    
+    if ((i>=76)&&(i<=78))||((i>=148)&&(i<=150))
+        continue
+    end
+    
     load(files(i).name)
+    if(data.session ~= 0) && (data.session ~=1)
+        clear('data');
+        continue
+    end
     
     if ~isfield(data.data_matrix, 'epoch_labels')
         clear('data');
@@ -41,7 +50,23 @@ for i = 25%:length(files)
     
     common_hustles = data.number_of_hustles + other_hustles;
     common_nonhustles = data.number_of_nonhustles + other_nonhustles;
-    
+    other_data = []
+%     %concatenating 2nd session
+%     other_file_name = [data.subject '_2_accel_data.mat'];
+%     try 
+%         other_data = load(other_file_name); 
+%         other_hustles = other_data.data.number_of_hustles;
+%         other_nonhustles = other_data.data.number_of_nonhustles;
+%         other_data = other_data.data;
+%         data.data_matrix = [data.data_matrix,other_data.data_matrix];
+%     catch
+%         warning('errors with loading 2 session');
+%        other_hustles = 0;
+%        other_nonhustles = 0;
+%     end
+%     
+%     common_hustles = common_hustles + other_hustles;
+%     common_nonhustles = common_nonhustles + other_nonhustles;
     
     % Figuring out the threshold value for critical_point
     % maximizing number of labeled epochs in critical epochs
@@ -172,3 +197,10 @@ if k ~= 0
     sum_threshold = sum_threshold/ k;
 end
 cd /home/evgeny/lab/task/accel
+
+% %%Histogram made by Sasha, 
+% th_hh =  th_h(~cellfun('isempty',th_h));
+% th_hh(1:32)=[]; 
+% th_hh(1:2:end-1)=[];
+% th_hh = cell2mat(th_hh);
+% th_mean = mean(th_hh);
